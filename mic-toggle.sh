@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
-cd "$(dirname "$0")"
-amixer set Capture toggle && test -z "$(amixer get Capture | tail -n 1 | grep '\[on\]')" && aplay mute.wav || aplay unmute.wav
+cd $(dirname "$0")
+amixer set Capture toggle
+STATUS=$(amixer get Capture | tail --lines=1 | grep --fixed-strings --only-matching "[on]")
+test "$STATUS" = "[on]" && AUDIOFILE="unmute.wav" || AUDIOFILE="mute.wav"
+aplay --quiet $AUDIOFILE
+
